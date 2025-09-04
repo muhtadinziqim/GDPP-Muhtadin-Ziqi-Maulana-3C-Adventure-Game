@@ -4,6 +4,9 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public Action<Vector2> OnMoveInput;
+    public Action<bool> OnSprintInput;
+    public Action OnJumpInput;
+
 
     private void Update()
     {
@@ -36,13 +39,20 @@ public class InputManager : MonoBehaviour
         bool isHoldSprintInput = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         if (isHoldSprintInput)
         {
-            Debug.Log("Sprinting");
+            if (OnSprintInput != null)
+            {
+                OnSprintInput(true);
+            }
         }
         else
         {
-            Debug.Log("Not Sprinting");
+            if (OnSprintInput != null)
+            {
+                OnSprintInput(false);
+            }
         }
     }
+
 
     private void CheckJumpInput()
     {
@@ -50,7 +60,10 @@ public class InputManager : MonoBehaviour
 
         if (isPressJumpInput)
         {
-            Debug.Log("Jump");
+            if (OnJumpInput != null)
+            {
+                OnJumpInput();
+            }
         }
     }
 
