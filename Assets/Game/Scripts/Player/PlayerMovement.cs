@@ -35,10 +35,38 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask _groundLayer;
     private bool _isGrounded;
 
+    [SerializeField]
+    private Vector3 _upperStepOffset;
+
+    [SerializeField]
+    private float _stepCheckerDistance;
+
+    [SerializeField]
+    private float _stepForce;
+
+    private PlayerStance _playerStance;
+
+    [SerializeField]
+    private Transform _climbDetector;
+
+    [SerializeField]
+    private float _climbCheckDistance;
+
+    [SerializeField]
+    private LayerMask _climbableLayer;
+
+    [SerializeField]
+    private Vector3 _climbOffset;
+
+    [SerializeField]
+    private float _climbSpeed;
+
+
     void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _speed = _walkSpeed;
+        _playerStance = PlayerStance.Stand;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -47,12 +75,15 @@ public class PlayerMovement : MonoBehaviour
         _input.OnMoveInput += Move;
         _input.OnSprintInput += Sprint;
         _input.OnJumpInput += Jump;
+        _input.OnClimbInput += StartClimb;
+        _input.OnCancelClimb += CancelClimb;
     }
 
     // Update is called once per frame
     void Update()
     {
         CheckIsGrounded();
+        CheckStep();
     }
 
     private void OnDestroy()
@@ -60,17 +91,34 @@ public class PlayerMovement : MonoBehaviour
         _input.OnMoveInput -= Move;
         _input.OnSprintInput -= Sprint;
         _input.OnJumpInput -= Jump;
+        _input.OnClimbInput -= StartClimb;
+        _input.OnCancelClimb -= CancelClimb;
     }
 
     private void Move(Vector2 axisDirection)
     {
-        if (axisDirection.magnitude >= 0.1)
+
+        Vector3 movementDirection = Vector3.zero;
+        bool isPlayerStanding = _playerStance == PlayerStance.Stand;
+        bool isPlayerClimbing = _playerStance == PlayerStance.Climb;
+
+        if (isPlayerStanding)
         {
-            float rotationAngle = Mathf.Atan2(axisDirection.x, axisDirection.y) * Mathf.Rad2Deg;
-            float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle, ref _rotationSmoothVelocity, _rotationSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
-            Vector3 movementDirection = Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward;
-            _rigidbody.AddForce(movementDirection * Time.deltaTime * _walkSpeed);
+            if (axisDirection.magnitude >= 0.1)
+            {
+                float rotationAngle = Mathf.Atan2(axisDirection.x, axisDirection.y) * Mathf.Rad2Deg;
+                float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle, ref _rotationSmoothVelocity, _rotationSmoothTime);
+                transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+                movementDirection = Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward;
+                _rigidbody.AddForce(movementDirection * Time.deltaTime * _speed);
+            }
+        }
+        else if (isPlayerClimbing)
+        {
+            Vector3 horizontal = axisDirection.x * transform.right;
+            Vector3 vertical = axisDirection.y * transform.up;
+            movementDirection = horizontal + vertical;
+            _rigidbody.AddForce(movementDirection * Time.deltaTime * _climbSpeed);
         }
     }
 
@@ -105,6 +153,49 @@ public class PlayerMovement : MonoBehaviour
     private void CheckIsGrounded()
     {
         _isGrounded = Physics.CheckSphere(_groundDetector.position, _detectorRadius, _groundLayer);
+    }
+
+    private void CheckStep()
+    {
+        bool isHitLowerStep = Physics.Raycast(_groundDetector.position,
+                                                transform.forward,
+                                                _stepCheckerDistance);
+        bool isHitUpperStep = Physics.Raycast(_groundDetector.position +
+                                                _upperStepOffset,
+                                                transform.forward,
+                                                _stepCheckerDistance);
+        if (isHitLowerStep && !isHitUpperStep)
+        {
+            _rigidbody.AddForce(0, _stepForce, 0);
+        }
+    }
+
+    private void StartClimb()
+    {
+        bool isInFrontOfClimbingWall = Physics.Raycast(_climbDetector.position,
+                                                            transform.forward,
+                                                            out RaycastHit hit,
+                                                            _climbCheckDistance,
+                                                            _climbableLayer);
+        bool isNotClimbing = _playerStance != PlayerStance.Climb;
+
+        if (isInFrontOfClimbingWall && _isGrounded && isNotClimbing)
+        {
+            Vector3 offset = (transform.forward * _climbOffset.z) + (Vector3.up * _climbOffset.y);
+            transform.position = hit.point - offset;
+            _playerStance = PlayerStance.Climb;
+            _rigidbody.useGravity = false;
+        }
+    }
+
+    private void CancelClimb()
+    {
+        if (_playerStance == PlayerStance.Climb)
+        {
+            _playerStance = PlayerStance.Stand;
+            _rigidbody.useGravity = true;
+            transform.position -= transform.forward * 1f;
+        }
     }
 
 }
