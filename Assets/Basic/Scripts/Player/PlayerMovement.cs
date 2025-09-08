@@ -111,6 +111,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private PlayerAudioManager _playerAudioManager;
 
+    private Vector3 rotationDegree = Vector3.zero;
+
     void Awake()
     {
         HideAndLockCursor();
@@ -230,7 +232,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isPlayerGliding)
         {
-            Vector3 rotationDegree = transform.rotation.eulerAngles;
             rotationDegree.x += _glideRotationSpeed.x * axisDirection.y * Time.deltaTime;
             rotationDegree.x = Mathf.Clamp(rotationDegree.x, _minGlideRotationX, _maxGlideRotationX);
             rotationDegree.z += _glideRotationSpeed.z * axisDirection.x * Time.deltaTime;
@@ -376,6 +377,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (_playerStance != PlayerStance.Glide && !_isGrounded)
         {
+            rotationDegree = transform.rotation.eulerAngles;
             _playerStance = PlayerStance.Glide;
             _animator.SetBool("IsGliding", true);
             _cameraManager.SetFPSClampedCamera(true, transform.rotation.eulerAngles);
@@ -390,8 +392,8 @@ public class PlayerMovement : MonoBehaviour
             _playerStance = PlayerStance.Stand;
             _animator.SetBool("IsGliding", false);
             _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
-            _playerAudioManager.StopGlideSfx();
         }
+        _playerAudioManager.StopGlideSfx();
     }
 
     private void Glide()
