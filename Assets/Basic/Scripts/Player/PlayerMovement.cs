@@ -355,6 +355,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void Crouch()
     {
+
+        Vector3 checkerUpPosition = transform.position + (transform.up * 1.4f);
+        bool isCantStand = Physics.Raycast(checkerUpPosition, transform.up, 0.25f, _groundLayer);
         if (_playerStance == PlayerStance.Stand)
         {
             _playerStance = PlayerStance.Crouch;
@@ -363,7 +366,7 @@ public class PlayerMovement : MonoBehaviour
             _collider.height = 1.3f;
             _collider.center = Vector3.up * 0.66f;
         }
-        else if (_playerStance == PlayerStance.Crouch)
+        else if (_playerStance == PlayerStance.Crouch && !isCantStand)
         {
             _playerStance = PlayerStance.Stand;
             _animator.SetBool("IsCrouch", false);
