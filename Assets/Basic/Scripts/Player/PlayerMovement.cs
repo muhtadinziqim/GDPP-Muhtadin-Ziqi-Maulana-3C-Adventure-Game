@@ -240,14 +240,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        if (_isGrounded)
+        if (_isGrounded && !_isPunching)
         {
             Vector3 jumpDirection = Vector3.up;
             _rigidbody.AddForce(jumpDirection * _jumpForce * Time.deltaTime);
-            _animator.SetTrigger("Jump");
+            _animator.SetBool("IsJump", true);
+            _animator.SetBool("IsJump", false);
         }
     }
-
 
     private void CheckIsGrounded()
     {
@@ -384,7 +384,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Punch()
     {
-        if (!_isPunching && _playerStance == PlayerStance.Stand)
+        if (!_isPunching && _playerStance == PlayerStance.Stand && _isGrounded)
         {
             _isPunching = true;
             if (_combo < 3)
@@ -418,7 +418,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Hit()
     {
-        Collider[] hitObjects = Physics.OverlapSphere(_hitDetector.position,_hitDetectorRadius,_hitLayer);
+        Collider[] hitObjects = Physics.OverlapSphere(_hitDetector.position, _hitDetectorRadius, _hitLayer);
         for (int i = 0; i < hitObjects.Length; i++)
         {
             if (hitObjects[i].gameObject != null)

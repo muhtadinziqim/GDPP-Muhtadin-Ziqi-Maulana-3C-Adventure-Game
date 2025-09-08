@@ -320,7 +320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollideAgainst:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 201
   IgnoreTag: 
   TransparentLayers:
     serializedVersion: 2
@@ -1119,8 +1119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62d54399b04b4fa48a73e121d4937dd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ReferenceFrame: 2
-  RecenterTarget: 2
+  ReferenceFrame: 1
+  RecenterTarget: 0
   PanAxis:
     Value: 0
     Center: 0
@@ -1205,7 +1205,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124993537}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5213339, y: 0.47771364, z: 0.5213338, w: -0.47771513}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -26.344, y: 2.4375458, z: 33.850582}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7548,7 +7548,7 @@ GameObject:
   - component: {fileID: 1116245195}
   - component: {fileID: 1116245194}
   - component: {fileID: 1116245193}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: PunchCube3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8003,7 +8003,7 @@ MonoBehaviour:
     Enabled: 0
     DefaultMode: 2
   DefaultBlend:
-    Style: 1
+    Style: 0
     Time: 2
     CustomCurve:
       serializedVersion: 2
@@ -8118,7 +8118,7 @@ GameObject:
   - component: {fileID: 1274853712}
   - component: {fileID: 1274853711}
   - component: {fileID: 1274853710}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: PunchCube2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11880,7 +11880,7 @@ GameObject:
   - component: {fileID: 1786920999}
   - component: {fileID: 1786920998}
   - component: {fileID: 1786920997}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: PunchCube4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21216,7 +21216,7 @@ GameObject:
   - component: {fileID: 1987053353}
   - component: {fileID: 1987053352}
   - component: {fileID: 1987053351}
-  m_Layer: 3
+  m_Layer: 6
   m_Name: Climbable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -21568,7 +21568,7 @@ GameObject:
   - component: {fileID: 2020445734}
   - component: {fileID: 2020445733}
   - component: {fileID: 2020445732}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: PunchCube1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22659,6 +22659,7 @@ GameObject:
   - component: {fileID: 1434023051634233367}
   - component: {fileID: 8157146989070844546}
   - component: {fileID: 8157146989070844547}
+  - component: {fileID: 8157146989070844548}
   m_Layer: 0
   m_Name: Wolfie
   m_TagString: Untagged
@@ -23572,6 +23573,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   _playerAudioManager: {fileID: 0}
+--- !u!114 &8157146989070844548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3556480046679429468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73989a52f326a68458c2075920880718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _footstepSfx: {fileID: 4115367054284841067}
+  _punchSfx: {fileID: 5878223836366309593}
+  _landingSfx: {fileID: 3123318956006262141}
+  _glideSfx: {fileID: 2706093817434338845}
 --- !u!1 &8245742782307129404
 GameObject:
   m_ObjectHideFlags: 0
