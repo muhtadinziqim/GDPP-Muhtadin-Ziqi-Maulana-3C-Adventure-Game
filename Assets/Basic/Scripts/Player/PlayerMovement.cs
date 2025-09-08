@@ -201,8 +201,27 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isPlayerClimbing)
         {
-            Vector3 horizontal = axisDirection.x * transform.right;
-            Vector3 vertical = axisDirection.y * transform.up;
+            Vector3 horizontal = Vector3.zero;
+            Vector3 vertical = Vector3.zero;
+            Vector3 checkerLeftPosition = transform.position + (transform.up * 1) + (-transform.right * .75f);
+            Vector3 checkerRightPosition = transform.position + (transform.up * 1) + (transform.right * 1f);
+            Vector3 checkerUpPosition = transform.position + (transform.up * 2.5f);
+            Vector3 checkerDownPosition = transform.position + (-transform.up * .25f);
+            bool isAbleClimbLeft = Physics.Raycast(checkerLeftPosition, transform.forward, _climbCheckDistance, _climbableLayer);
+            bool isAbleClimbRight = Physics.Raycast(checkerRightPosition, transform.forward, _climbCheckDistance, _climbableLayer);
+            bool isAbleClimbUp = Physics.Raycast(checkerUpPosition, transform.forward, _climbCheckDistance, _climbableLayer);
+            bool isAbleClimbDown = Physics.Raycast(checkerDownPosition, transform.forward, _climbCheckDistance, _climbableLayer);
+
+            if ((isAbleClimbLeft && (axisDirection.x < 0)) || (isAbleClimbRight && (axisDirection.x > 0)))
+            {
+                horizontal = axisDirection.x * transform.right;
+            }
+
+            if ((isAbleClimbUp && (axisDirection.y > 0)) || (isAbleClimbDown && (axisDirection.y < 0)))
+            {
+                vertical = axisDirection.y * transform.up;
+            }
+
             movementDirection = horizontal + vertical;
             _rigidbody.AddForce(movementDirection * Time.deltaTime * _climbSpeed);
             Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, _rigidbody.linearVelocity.y, 0);
@@ -287,6 +306,12 @@ public class PlayerMovement : MonoBehaviour
         if (isInFrontOfClimbingWall && _isGrounded && isNotClimbing)
         {
             Vector3 offset = (transform.forward * _climbOffset.z) + (Vector3.up * _climbOffset.y);
+
+            Vector3 climbablePoint = hit.collider.bounds.ClosestPoint(transform.position);
+            Vector3 direction = (climbablePoint - transform.position).normalized;
+            direction.y = 0;
+
+            transform.rotation = Quaternion.LookRotation(direction);
             transform.position = hit.point - offset;
             _playerStance = PlayerStance.Climb;
             _rigidbody.useGravity = false;
