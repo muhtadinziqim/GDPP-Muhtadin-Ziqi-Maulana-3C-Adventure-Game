@@ -308,8 +308,11 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 offset = (transform.forward * _climbOffset.z) + (Vector3.up * _climbOffset.y);
 
+            Debug.Log("Position: " + transform.position);
             Vector3 climbablePoint = hit.collider.bounds.ClosestPoint(transform.position);
+            Debug.Log("Climbable Point: " + climbablePoint);
             Vector3 direction = (climbablePoint - transform.position).normalized;
+            Debug.Log("Direction: " + direction);
             direction.y = 0;
 
             transform.rotation = Quaternion.LookRotation(direction);
