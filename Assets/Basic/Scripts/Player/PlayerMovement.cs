@@ -225,11 +225,11 @@ public class PlayerMovement : MonoBehaviour
             }
 
             movementDirection = horizontal + vertical;
-            _rigidbody.AddForce(movementDirection * Time.deltaTime * _climbSpeed);
-            Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, _rigidbody.linearVelocity.y, 0);
-            _animator.SetFloat("ClimbVelocityY", velocity.magnitude * axisDirection.y);
-            _animator.SetFloat("ClimbVelocityX", velocity.magnitude * axisDirection.x);
-        }
+                _rigidbody.AddForce(movementDirection * Time.deltaTime * _climbSpeed);
+                Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, _rigidbody.linearVelocity.y, 0);
+                _animator.SetFloat("ClimbVelocityY", velocity.magnitude * axisDirection.y);
+                _animator.SetFloat("ClimbVelocityX", velocity.magnitude * axisDirection.x);
+            }
         else if (isPlayerGliding)
         {
             rotationDegree.x += _glideRotationSpeed.x * axisDirection.y * Time.deltaTime;
@@ -306,17 +306,20 @@ public class PlayerMovement : MonoBehaviour
 
         if (isInFrontOfClimbingWall && _isGrounded && isNotClimbing)
         {
-            Vector3 offset = (transform.forward * _climbOffset.z) + (Vector3.up * _climbOffset.y);
-
-            Debug.Log("Position: " + transform.position);
-            Vector3 climbablePoint = hit.collider.bounds.ClosestPoint(transform.position);
-            Debug.Log("Climbable Point: " + climbablePoint);
-            Vector3 direction = (climbablePoint - transform.position).normalized;
-            Debug.Log("Direction: " + direction);
+            // Calculate direction from wall to player (so player faces the wall)
+            Vector3 direction = -hit.normal;
             direction.y = 0;
-
+            if (direction == Vector3.zero)
+            {
+                direction = -transform.forward;
+            }
+            Debug.Log(direction);
             transform.rotation = Quaternion.LookRotation(direction);
-            transform.position = hit.point - offset;
+
+            // Place player slightly away from the wall using the hit normal and offset
+            Vector3 offset = (direction * _climbOffset.z) + (Vector3.up * _climbOffset.y);
+            transform.position = hit.point + hit.normal * 0.1f - offset;
+
             _playerStance = PlayerStance.Climb;
             _rigidbody.useGravity = false;
 
