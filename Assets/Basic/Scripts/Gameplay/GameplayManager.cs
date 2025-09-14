@@ -5,6 +5,10 @@ public class GameplayManager : MonoBehaviour
 {
     [SerializeField]
     private InputManager _inputManager;
+
+    [SerializeField]
+    private string _mainMenuSceneName;
+
     void Awake()
     {
         _inputManager.OnMainMenuInput += BackToMainMenu;
@@ -17,6 +21,6 @@ public class GameplayManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene(_mainMenuSceneName);
     }
 }

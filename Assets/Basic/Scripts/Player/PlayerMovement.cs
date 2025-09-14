@@ -113,6 +113,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 rotationDegree = Vector3.zero;
 
+    [SerializeField]
+    private Transform _resetCheckpointPosition;
+
     void Awake()
     {
         HideAndLockCursor();
@@ -225,11 +228,11 @@ public class PlayerMovement : MonoBehaviour
             }
 
             movementDirection = horizontal + vertical;
-                _rigidbody.AddForce(movementDirection * Time.deltaTime * _climbSpeed);
-                Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, _rigidbody.linearVelocity.y, 0);
-                _animator.SetFloat("ClimbVelocityY", velocity.magnitude * axisDirection.y);
-                _animator.SetFloat("ClimbVelocityX", velocity.magnitude * axisDirection.x);
-            }
+            _rigidbody.AddForce(movementDirection * Time.deltaTime * _climbSpeed);
+            Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, _rigidbody.linearVelocity.y, 0);
+            _animator.SetFloat("ClimbVelocityY", velocity.magnitude * axisDirection.y);
+            _animator.SetFloat("ClimbVelocityX", velocity.magnitude * axisDirection.x);
+        }
         else if (isPlayerGliding)
         {
             rotationDegree.x += _glideRotationSpeed.x * axisDirection.y * Time.deltaTime;
@@ -464,4 +467,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void ResetPositionToCheckpoint()
+    {
+        if (_resetCheckpointPosition != null)
+        {
+            transform.position = _resetCheckpointPosition.position;
+            transform.rotation = _resetCheckpointPosition.rotation;
+        }
+    }
 }
